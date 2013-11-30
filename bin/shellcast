@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+var http = require('http');
+var io = require('socket.io-client');
+var spawn = require('pty.js').spawn;
+var url = 'http://localhost:5000/t/';
+
+if (!process.stdin.isTTY) {
+	console.error('shellcast expects to be run from a TTY');
+	process.exit();
+}
+
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
+
+http.get(url + id + '/c', function(res) {
+	res.setEncoding('utf8');
+	res.on('data', function(data) {
+		data = JSON.parse(data);
+		var pipe = io.connect(url + id + '/' + data.token);
+		pipe.on('connect', function() {
+			shellcast(pipe);
+		});
+	});
+});
+
+function shellcast(socket) {
+	process.env.SHELLCAST = process.pid;
+	process.stdout.cursorTo(0, 0);
+	process.stdout.clearScreenDown();
+
+	console.log(url + id);
+	socket.emit('data', url + id);
+
+	var shell = spawn(process.env.SHELL, [], {
+		rows: process.stdout.rows,
+		cols: process.stdout.columns,
+		env: process.env,
+	});
+
+	socket.emit('resize', {
+		rows: shell.rows,
+		cols: shell.cols,
+	});
+
+	process.stdout.on('resize', function() {
+		var rows = process.stdout.rows;
+		var cols = process.stdout.columns;
+
+		shell.resize(cols, rows);
+		socket.emit('resize', {
+			rows: rows,
+			cols: cols,
+		});
+	});
+
+	shell.stdout.setEncoding('utf8');
+	shell.stdout.on('data', socket.emit.bind(socket, 'data'));
+	shell.stdout.on('data', process.stdout.write.bind(process.stdout));
+	shell.stdout.on('exit', function() {
+		console.error('Shellcasting session ended.');
+		process.exit()
+	});
+
+	process.stdin.setRawMode(true);
+	process.stdin.setEncoding('utf8');
+	process.stdin.on('data', shell.write.bind(shell));
+	process.stdin.on('end', process.exit.bind(process));
+
+	shell.stdout.resume();
+	process.stdin.resume();
+}
+
+// vim: set ft=javascript :

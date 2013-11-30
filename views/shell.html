@@ -1,0 +1,94 @@
+<!doctype html>
+<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	height: 100%;
+	background: #222;
+}
+
+.terminal {
+	border: 0;
+	display: inline-block;
+	float: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+	box-shadow: 0 0 20px 10px rgba(0, 0, 0, .75);
+}
+</style>
+
+<body></body>
+
+<script src="term.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+Terminal.bindMouse =
+Terminal.bindKeys =
+Terminal.fixIpad = function() {};
+
+var term = new Terminal({
+	cols: 80,
+	rows: 24,
+	useStyle: true,
+	scrollback: 0,
+	cursorBlink: false,
+	colors: Terminal.tangoColors,
+});
+
+term.scaleMode = 'zoom';
+
+term.open(document.body);
+
+var socket = io.connect(location.pathname);
+
+socket.on('connect', term.reset.bind(term));
+socket.on('data', term.write.bind(term));
+socket.on('reset', term.reset.bind(term));
+
+socket.on('resize', function(data) {
+	term.resize(data.cols, data.rows)
+	setTimeout(window.onresize, 0);
+});
+
+socket.on('sync', function(data) {
+	term.reset();
+	term.lines = data.lines;
+	term.x = data.x;
+	term.y = data.y;
+	term.resize(data.cols, data.rows);
+	setTimeout(window.onresize, 0);
+});
+
+// TODO: display a notification
+socket.on('disconnect', function() {
+	term.reset();
+	term.write('Disconnected.');
+});
+
+(onresize = function() {
+	var transform;
+	var scaleX = window.innerWidth / term.element.clientWidth;
+	var scaleY = window.innerHeight / term.element.clientHeight;
+
+	switch (term.scaleMode) {
+		case 'stretch':
+			transform = 'scaleX(' + scaleX + ') scaleY(' + scaleY + ')';
+			break;
+
+		case 'zoom':
+		default:
+			transform = 'scale(' + Math.min(scaleX, scaleY) + ')';
+			break;
+	}
+
+	term.element.style.marginTop = -(term.element.clientHeight / 2) + 'px';
+	term.element.style.marginLeft = -(term.element.clientWidth / 2) + 'px';
+
+	term.element.style.transform =
+	term.element.style.webkitTransform = transform;
+})();
+</script>

@@ -1,0 +1,15 @@
+{
+  "name": "shellcast",
+  "version": "0.0.0",
+  "description": "Shellcast client and server",
+  "author": "rummik",
+  "license": "MPL",
+  "dependencies": {
+    "term.js": "0.0.3",
+    "express": "~3.4.5",
+    "swig": "~1.1.0",
+    "socket.io": "~0.9.16",
+    "socket.io-client": "~0.9.16",
+    "pty.js": "~0.2.3"
+  }
+}

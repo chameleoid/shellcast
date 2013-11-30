@@ -23,10 +23,13 @@ app.engine('html', swig.renderFile);
 
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
+app.set('view cache', false);
+swig.setDefaults({ cache: false });
 
 io.configure('production', function() {
 	io.enable('browser client etag');
 	io.set('log level', 1);
+	app.set('view cache', true);
 });
 
 app.get('/', function(req, res) {

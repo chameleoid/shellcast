@@ -29,6 +29,10 @@ io.configure('production', function() {
 	io.set('log level', 1);
 });
 
+app.get('/', function(req, res) {
+	res.render('home');
+});
+
 app.get('/t/:term', function(req, res) {
 	if (shellcasts[req.params.term])
 		res.render('shell');

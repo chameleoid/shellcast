@@ -53,6 +53,7 @@ app.get('/t/:term/c', function(req, res) {
 			});
 
 			socket.on('disconnect', function() {
+				sc.term.reset();
 				delete shellcasts[req.params.term];
 			});
 		});

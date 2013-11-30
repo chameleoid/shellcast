@@ -32,7 +32,7 @@ if (argv.s || argv.server) {
 }
 
 function shellcast(socket) {
-	process.env.SHELLCAST = process.pid;
+	process.env.SHELLCAST = url;
 	process.stdout.cursorTo(0, 0);
 	process.stdout.clearScreenDown();
 	process.env.TERM = 'xterm';

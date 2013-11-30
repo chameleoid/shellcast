@@ -37,8 +37,8 @@ function shellcast(socket) {
 	process.stdout.clearScreenDown();
 	process.env.TERM = 'xterm';
 
-	console.log(url);
-	socket.emit('data', url);
+	console.log('Shellcasting to ' + url);
+	socket.emit('data', 'Shellcasting to ' + url + '\r\n');
 
 	var shell = spawn(process.env.SHELL, [], {
 		rows: process.stdout.rows,

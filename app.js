@@ -4,18 +4,11 @@ var app = express();
 var server = require('http').createServer(app);
 var swig = require('swig');
 var io = require('socket.io').listen(server);
-
-var term = require('term.js');
-
-require('./lib/dummy-dom');
+var term = require('./lib/headless-term.js');
 
 app.use('/t', term.middleware());
 
 app.use(express.static(__dirname + '/public'));
-
-term.Terminal.options.scrollback = 0;
-term.Terminal.options.cursorBlink = false;
-term.Terminal.prototype.refresh = function() {};
 
 var shellcasts = {};
 

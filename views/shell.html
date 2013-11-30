@@ -71,6 +71,7 @@ socket.on('sync', function(data) {
 
 // TODO: display a notification
 socket.on('disconnect', function() {
+	term.reset();
 	term.write('Disconnected.');
 });
 

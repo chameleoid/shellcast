@@ -19,7 +19,9 @@ var socket = io.connect(location.pathname);
 
 socket.on('connect', term.reset.bind(term));
 socket.on('data', term.write.bind(term));
-socket.on('viewers', console.log.bind(console, 'viewers:'));
+socket.on('viewers', function(viewers) {
+	document.getElementById('viewers').innerHTML = viewers;
+});
 
 socket.on('resize', function(data) {
 	term.options.cols = data.cols;

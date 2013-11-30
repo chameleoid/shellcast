@@ -6,6 +6,7 @@ html, body {
 	overflow: hidden;
 	height: 100%;
 	background: #222;
+	font-family: monospace;
 }
 
 .terminal {
@@ -19,9 +20,22 @@ html, body {
 	transform-origin: 50% 50%;
 	box-shadow: 0 0 20px 10px rgba(0, 0, 0, .75);
 }
+
+.controls {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	color: #fff;
+	padding: 5px;
+	background: rgba(128, 128, 128, .5);
+}
 </style>
 
-<body></body>
+<body>
+<div class="controls">
+	Viewers: <span id="viewers">0</span>
+</div>
+</body>
 
 <script src="term.js"></script>
 <script src="/socket.io/socket.io.js"></script>

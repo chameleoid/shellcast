@@ -6,26 +6,30 @@ var argv = require('optimist').argv;
 
 var host = argv.host || 'ansible.tk';
 
-if (!process.stdin.isTTY) {
-	console.error('shellcast expects to be run from a TTY');
-	process.exit();
-}
+if (argv.s || argv.server) {
+	require(__dirname + '/../app.js');
+} else {
+	if (!process.stdin.isTTY) {
+		console.error('shellcast expects to be run from a TTY');
+		process.exit();
+	}
 
-var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
+	var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+	for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
 
-var url = 'http://' + host + '/t/' + id;
+	var url = 'http://' + host + '/t/' + id;
 
-http.get(url + '/c', function(res) {
-	res.setEncoding('utf8');
-	res.on('data', function(data) {
-		data = JSON.parse(data);
-		var pipe = io.connect(url + '/' + data.token);
-		pipe.on('connect', function() {
-			shellcast(pipe);
+	http.get(url + '/c', function(res) {
+		res.setEncoding('utf8');
+		res.on('data', function(data) {
+			data = JSON.parse(data);
+			var pipe = io.connect(url + '/' + data.token);
+			pipe.on('connect', function() {
+				shellcast(pipe);
+			});
 		});
 	});
-});
+}
 
 function shellcast(socket) {
 	process.env.SHELLCAST = process.pid;

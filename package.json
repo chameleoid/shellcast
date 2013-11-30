@@ -7,6 +7,10 @@
   "bin": {
     "shellcast": "./bin/shellcast"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chameleoid/shellcast"
+  },
   "dependencies": {
     "term.js": "0.0.3",
     "express": "~3.4.5",

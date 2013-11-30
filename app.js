@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').createServer(app);
+var swig = require('swig');
 var io = require('socket.io').listen(server);
 
 var term = require('term.js');
@@ -9,11 +11,18 @@ require('./lib/dummy-dom');
 
 app.use('/t', term.middleware());
 
+app.use(express.static(__dirname + '/public'));
+
 term.Terminal.options.scrollback = 0;
 term.Terminal.options.cursorBlink = false;
 term.Terminal.prototype.refresh = function() {};
 
 var shellcasts = {};
+
+app.engine('html', swig.renderFile);
+
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
 
 io.configure('production', function() {
 	io.enable('browser client etag');
@@ -22,7 +31,7 @@ io.configure('production', function() {
 
 app.get('/t/:term', function(req, res) {
 	if (shellcasts[req.params.term])
-		res.sendfile(__dirname + '/views/shell.html');
+		res.render('shell');
 	else
 		res.send(404, 'No shell broadcasting at this location.');
 });

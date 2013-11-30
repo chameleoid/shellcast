@@ -47,25 +47,30 @@ var socket = io.connect(location.pathname);
 
 socket.on('connect', term.reset.bind(term));
 socket.on('data', term.write.bind(term));
-socket.on('reset', term.reset.bind(term));
+socket.on('viewers', console.log.bind(console, 'viewers:'));
 
 socket.on('resize', function(data) {
+	term.options.cols = data.cols;
+	term.options.rows = data.rows;
 	term.resize(data.cols, data.rows)
 	setTimeout(window.onresize, 0);
 });
 
 socket.on('sync', function(data) {
-	term.reset();
-	term.lines = data.lines;
-	term.x = data.x;
-	term.y = data.y;
+	term.options.cols = data.cols;
+	term.options.rows = data.rows;
 	term.resize(data.cols, data.rows);
-	setTimeout(window.onresize, 0);
+	setTimeout(function() {
+		term.lines = data.lines;
+		term.x = data.x;
+		term.y = data.y;
+		term.refresh(0, term.rows - 1);
+		window.onresize();
+	}, 0);
 });
 
 // TODO: display a notification
 socket.on('disconnect', function() {
-	term.reset();
 	term.write('Disconnected.');
 });
 

@@ -2,7 +2,9 @@
 var http = require('http');
 var io = require('socket.io-client');
 var spawn = require('pty.js').spawn;
-var url = 'http://localhost:5000/t/';
+var argv = require('optimist').argv;
+
+var host = argv.host || 'ansible.tk';
 
 if (!process.stdin.isTTY) {
 	console.error('shellcast expects to be run from a TTY');
@@ -12,11 +14,13 @@ if (!process.stdin.isTTY) {
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
 
-http.get(url + id + '/c', function(res) {
+var url = 'http://' + host + '/t/' + id;
+
+http.get(url + '/c', function(res) {
 	res.setEncoding('utf8');
 	res.on('data', function(data) {
 		data = JSON.parse(data);
-		var pipe = io.connect(url + id + '/' + data.token);
+		var pipe = io.connect(url + '/' + data.token);
 		pipe.on('connect', function() {
 			shellcast(pipe);
 		});
@@ -27,9 +31,10 @@ function shellcast(socket) {
 	process.env.SHELLCAST = process.pid;
 	process.stdout.cursorTo(0, 0);
 	process.stdout.clearScreenDown();
+	process.env.TERM = 'xterm';
 
-	console.log(url + id);
-	socket.emit('data', url + id);
+	console.log(url);
+	socket.emit('data', url);
 
 	var shell = spawn(process.env.SHELL, [], {
 		rows: process.stdout.rows,

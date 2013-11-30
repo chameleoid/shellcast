@@ -41,17 +41,13 @@ app.get('/t/:term/c', function(req, res) {
 			});
 
 			socket.on('resize', function(data) {
+				sc.term.options.cols = data.cols;
+				sc.term.options.rows = data.rows;
 				sc.term.resize(data.cols, data.rows);
 				sc.socket.emit('resize', data);
 			});
 
-			socket.on('reset', function() {
-				sc.term.reset();
-				sc.socket.emit('reset');
-			});
-
 			socket.on('disconnect', function() {
-				sc.term.reset();
 				delete shellcasts[req.params.term];
 			});
 		});
@@ -76,4 +72,4 @@ app.get('/t/:term/c', function(req, res) {
 	}
 });
 
-server.listen(process.env.PORT || 5000);
+server.listen(process.env.PORT || 13377);

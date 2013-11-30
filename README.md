@@ -11,7 +11,23 @@ A shellcasting service
 
 
 ## Getting Started
-_(Coming soon)_
+
+Install shellcast:
+```
+$ npm install -g shellcast
+```
+
+Start casting:
+```
+$ shellcast
+Shellcasting to http://ansible.tk/t/MBQUzy84
+$ ls /
+bin   cdrom  etc   initrd.img      lib    lib64       media  opt   root  sbin  sys  usr  vmlinuz
+boot  dev    home  initrd.img.old  lib32  lost+found  mnt    proc  run   srv   tmp  var  vmlinuz.old
+$
+```
+
+Shellcast will then relay your TTY to Ansible.tk at the provided URL
 
 
 ## Documentation

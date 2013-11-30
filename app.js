@@ -15,6 +15,11 @@ term.Terminal.prototype.refresh = function() {};
 
 var shellcasts = {};
 
+io.configure('production', function() {
+	io.enable('browser client etag');
+	io.set('log level', 1);
+});
+
 app.get('/t/:term', function(req, res) {
 	if (shellcasts[req.params.term])
 		res.sendfile(__dirname + '/views/shell.html');

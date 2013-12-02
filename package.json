@@ -18,6 +18,7 @@
     "socket.io": "~0.9.16",
     "socket.io-client": "~0.9.16",
     "pty.js": "~0.2.3",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "underscore": "~1.5.2"
   }
 }

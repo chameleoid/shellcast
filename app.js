@@ -5,12 +5,21 @@ var server = require('http').createServer(app);
 var swig = require('swig');
 var io = require('socket.io').listen(server);
 var term = require('./lib/headless-term.js');
+var _ = require('underscore');
 
 app.use('/t', term.middleware());
 
 app.use(express.static(__dirname + '/public'));
 
 var shellcasts = {};
+var stats = {
+	viewers: 0,
+	broadcasts: 0,
+	socket: io.of('/stats'),
+	update: _.debounce(function() {
+		this.socket.emit('stats', _.omit(this, 'socket', 'update'));
+	}),
+};
 
 app.engine('html', swig.renderFile);
 
@@ -23,6 +32,10 @@ io.configure('production', function() {
 	io.enable('browser client etag');
 	io.set('log level', 1);
 	app.set('view cache', true);
+});
+
+stats.socket.on('connection', function(socket) {
+	socket.emit('stats', _.omit(stats, 'socket', 'update'));
 });
 
 app.get('/', function(req, res) {
@@ -61,7 +74,13 @@ app.get('/t/:term/c', function(req, res) {
 				sc.socket.emit('resize', data);
 			});
 
+			stats.broadcasts++;
+			stats.update();
+
 			socket.on('disconnect', function() {
+				stats.broadcasts--;
+				stats.update();
+
 				sc.term.reset();
 				delete shellcasts[req.params.term];
 			});
@@ -76,8 +95,14 @@ app.get('/t/:term/c', function(req, res) {
 				cols: sc.term.cols,
 			});
 
+			stats.viewers++;
+			stats.update();
+
 			sc.socket.emit('viewers', ++sc.viewers);
 			socket.on('disconnect', function() {
+				stats.viewers--;
+				stats.update();
+
 				sc.viewers--;
 				sc.socket.emit('viewers', sc.viewers);
 			});
@@ -87,4 +112,4 @@ app.get('/t/:term/c', function(req, res) {
 	}
 });
 
-server.listen(process.env.PORT || 13377);
+server.listen(process.env.PORT || 5000);

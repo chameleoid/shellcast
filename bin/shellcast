@@ -4,7 +4,7 @@ var io = require('socket.io-client');
 var spawn = require('pty.js').spawn;
 var argv = require('optimist').argv;
 
-var host = argv.host || 'ansible.tk';
+var host = argv.host || 'shellcast.tk';
 
 if (argv.s || argv.server) {
 	require(__dirname + '/../app.js');

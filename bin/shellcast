@@ -2,11 +2,27 @@
 var http = require('http');
 var io = require('socket.io-client');
 var spawn = require('pty.js').spawn;
-var argv = require('optimist').argv;
+var optimist = require('optimist')
+	.usage('Usage: $0')
+	.options('server', { alias: 's' })
+	.options('host', {
+		description: 'Shellcast server hostname',
+		default: 'shellcast.tk',
+	})
+	.options('help', {
+		alias: 'h',
+		description: 'Display help',
+	});
 
-var host = argv.host || 'shellcast.tk';
+var argv = optimist.argv;
+var host = argv.host;
 
-if (argv.s || argv.server) {
+if (argv.help) {
+	optimist.showHelp();
+	process.exit();
+}
+
+if (argv.server) {
 	require(__dirname + '/../app.js');
 } else {
 	if (!process.stdin.isTTY) {

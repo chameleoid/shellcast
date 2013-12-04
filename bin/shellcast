@@ -9,6 +9,16 @@ var optimist = require('optimist')
 		description: 'Shellcast server hostname',
 		default: 'shellcast.tk',
 	})
+	.options('public', {
+		alias: 'p',
+		description: 'Show in public broadcast list',
+		default: false,
+	})
+	.options('title', {
+		alias: 't',
+		description: 'Title of broadcast',
+		default: process.env.USER + '\'s broadcast',
+	})
 	.options('help', {
 		alias: 'h',
 		description: 'Display help',
@@ -55,6 +65,11 @@ function shellcast(socket) {
 
 	console.log('Shellcasting to ' + url);
 	socket.emit('data', 'Shellcasting to ' + url + '\r\n');
+
+	socket.emit('options', {
+		public: argv.public,
+		title: argv.title,
+	});
 
 	var shell = spawn(process.env.SHELL, [], {
 		rows: process.stdout.rows,

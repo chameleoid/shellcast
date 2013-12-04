@@ -24,6 +24,9 @@ Shellcast will then relay your TTY to shellcast.tk at the provided URL
 <a href="https://github.com/chameleoid/shellcast">Source</a>, <a href="https://github.com/rummik">rummik</a>
 
 Currently broadcasting <span id="broadcasts">0 shells</span> to <span id="viewers">0 viewers</span>
+
+Public broadcasts:
+<div id="public-broadcasts"></div>
 </pre>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -34,5 +37,22 @@ Currently broadcasting <span id="broadcasts">0 shells</span> to <span id="viewer
 
 		document.getElementById('viewers').innerHTML =
 			stats.viewers + ' ' + (stats.viewers != 1 ? 'viewers' : 'viewer');
+
+		var publicBroadcasts = document.getElementById('public-broadcasts');
+
+		if (!Object.keys(stats.publicBroadcasts).length)
+			publicBroadcasts.innerHTML = 'none';
+		else
+			publicBroadcasts.innerHTML = '';
+
+		Object.keys(stats.publicBroadcasts).forEach(function(id) {
+			var link = document.createElement('a');
+			var text = document.createTextNode(stats.publicBroadcasts[id].options.title + '\n');
+
+			link.href = '/t/' + id;
+			link.appendChild(text);
+
+			publicBroadcasts.appendChild(link);
+		});
 	});
 </script>

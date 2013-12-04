@@ -15,6 +15,7 @@ var shellcasts = {};
 var stats = {
 	viewers: 0,
 	broadcasts: 0,
+	publicBroadcasts: {},
 	socket: io.of('/stats'),
 	update: _.debounce(function() {
 		this.socket.emit('stats', _.omit(this, 'socket', 'update'));
@@ -57,6 +58,10 @@ app.get('/t/:term/c', function(req, res) {
 			viewers: 0,
 			socket: io.of('/t/' + req.params.term),
 			control: io.of('/t/' + req.params.term + '/' + token),
+			options: {
+				public: false,
+				title: req.params.term,
+			},
 		};
 
 		sc.term.open(document.body);
@@ -74,6 +79,19 @@ app.get('/t/:term/c', function(req, res) {
 				sc.socket.emit('resize', data);
 			});
 
+			socket.on('options', function(options) {
+				var del = !sc.options.public && options.public;
+
+				sc.options = options;
+
+				if (options.public)
+					stats.publicBroadcasts[req.params.term] = _.pick(sc, 'viewers', 'options');
+				else if (del)
+					delete stats.publicBroadcasts[req.params.term];
+
+				stats.update();
+			});
+
 			stats.broadcasts++;
 			stats.update();
 
@@ -83,6 +101,7 @@ app.get('/t/:term/c', function(req, res) {
 
 				sc.term.reset();
 				delete shellcasts[req.params.term];
+				delete stats.publicBroadcasts[req.params.term];
 			});
 		});
 

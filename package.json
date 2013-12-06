@@ -14,7 +14,7 @@
   "dependencies": {
     "term.js": "0.0.3",
     "express": "~3.4.5",
-    "swig": "~1.1.0",
+    "swig": "~1.2.2",
     "socket.io": "~0.9.16",
     "socket.io-client": "~0.9.16",
     "pty.js": "~0.2.3",

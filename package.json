@@ -4,6 +4,9 @@
   "description": "Shellcast client and server",
   "author": "rummik",
   "license": "MPL",
+  "engines": {
+    "node": "0.10.x"
+  },
   "bin": {
     "shellcast": "./bin/shellcast"
   },

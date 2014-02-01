@@ -17,27 +17,12 @@
 " Note: `_vimrc_local.vim` is ignored in our `.gitignore`, so there shouldn't
 " be any issues with you using it
 
-setl smarttab
-setl noexpandtab
-
 if bufname("%") =~? '\.jshintrc$'
 	setl filetype=javascript
 endif
 
 if bufname("%") =~? '\.md$'
 	setl filetype=markdown
-endif
-
-if &filetype == 'yaml'
-	setl expandtab
-	setl shiftwidth=8 tabstop=8
-endif
-
-if &filetype == 'markdown'
-	setl expandtab
-	setl shiftwidth=2 tabstop=2
-	setl linebreak textwidth=80
-	setl foldmethod=marker
 endif
 
 if &filetype == 'html'

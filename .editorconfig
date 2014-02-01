@@ -1,0 +1,26 @@
+# EditorConfig is awesome: http://EditorConfig.org
+root = true
+
+[*]
+charset = utf-8
+
+indent_style = tab
+indent_size = 8
+
+quote_type = single
+
+curly_bracket_next_line = false
+spaces_around_operators = true
+spaces_around_brackets = false
+
+[*.md]
+indent_style = space
+indent_size = 2
+max_line_length = 80
+
+[*.yml]
+indent_style = space
+
+[{package,bower}.json]
+indent_style = space
+indent_size = 2

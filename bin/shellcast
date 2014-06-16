@@ -7,7 +7,7 @@ var optimist = require('optimist')
 	.options('server', { alias: 's' })
 	.options('host', {
 		description: 'Shellcast server hostname',
-		default: 'shellcast.tk',
+		default: 'tty.tv',
 	})
 	.options('public', {
 		alias: 'p',

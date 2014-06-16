@@ -27,7 +27,7 @@ boot  dev    home  initrd.img.old  lib32  lost+found  mnt    proc  run   srv   t
 $
 ```
 
-Shellcast will then relay your TTY to shellcast.tk at the provided URL
+Shellcast will then relay your TTY to tty.tv at the provided URL
 
 
 ## Documentation

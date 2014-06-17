@@ -2,12 +2,12 @@ Shellcast [![Builds][]][travis] [![Deps][]][gemnasium] [![Donations][]][gittip]
 =========
 A shellcasting service
 
-[Builds]: http://img.shields.io/travis-ci/chameleoid/shellcast.png "Build Status"
-[travis]: https://travis-ci.org/chameleoid/shellcast
-[Deps]: https://gemnasium.com/chameleoid/shellcast.png "Dependency Status"
-[gemnasium]: https://gemnasium.com/chameleoid/shellcast
-[Donations]: http://img.shields.io/gittip/chameleoid.png
-[gittip]: https://www.gittip.com/chameleoid/
+[Builds]: http://img.shields.io/travis-ci/rummik/shellcast.png "Build Status"
+[travis]: https://travis-ci.org/rummik/shellcast
+[Deps]: https://gemnasium.com/rummik/shellcast.png "Dependency Status"
+[gemnasium]: https://gemnasium.com/rummik/shellcast
+[Donations]: http://img.shields.io/gittip/rummik.png
+[gittip]: https://www.gittip.com/rummik/
 
 
 ## Getting Started

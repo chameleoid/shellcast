@@ -30,14 +30,6 @@ $
 Shellcast will then relay your TTY to tty.tv at the provided URL
 
 
-## Documentation
-_(Coming soon)_
-
-
-## Examples
-_(Coming soon)_
-
-
 ## Contributing
 Please see the [Chameleoid Styleguide][] before contributing.
 
@@ -48,10 +40,6 @@ changed functionality.  Lint and test your code using [Grunt][].
 [Grunt]: http://gruntjs.com/
 
 
-## Release History
-_(Nothing yet)_
-
-
 ## License
-Copyright (c) 2013
+Copyright (c) 2013-2014
 Licensed under the MPL license.

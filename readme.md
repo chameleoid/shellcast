@@ -6,7 +6,7 @@ A shellcasting service
 [travis]: https://travis-ci.org/rummik/shellcast
 [Deps]: https://gemnasium.com/rummik/shellcast.png "Dependency Status"
 [gemnasium]: https://gemnasium.com/rummik/shellcast
-[Donations]: http://img.shields.io/gittip/rummik.png
+[Donations]: http://img.shields.io/gratipay/rummik.svg
 [gittip]: https://www.gittip.com/rummik/
 
 

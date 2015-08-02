@@ -1,13 +1,11 @@
-Shellcast [![Builds][]][travis] [![Deps][]][gemnasium] [![Donations][]][gittip]
+Shellcast [![dependencies][]][Gemnasium]
 =========
 A shellcasting service
 
-[Builds]: http://img.shields.io/travis-ci/rummik/shellcast.png "Build Status"
-[travis]: https://travis-ci.org/rummik/shellcast
-[Deps]: https://gemnasium.com/rummik/shellcast.png "Dependency Status"
-[gemnasium]: https://gemnasium.com/rummik/shellcast
-[Donations]: http://img.shields.io/gratipay/rummik.svg
-[gittip]: https://www.gittip.com/rummik/
+[builds]: http://img.shields.io/travis-ci/rummik/shellcast.png "Build Status"
+[Travis]: https://travis-ci.org/rummik/shellcast
+[dependencies]: https://gemnasium.com/rummik/shellcast.png "Dependency Status"
+[Gemnasium]: https://gemnasium.com/rummik/shellcast
 
 
 ## Getting Started
@@ -41,5 +39,5 @@ changed functionality.  Lint and test your code using [Grunt][].
 
 
 ## License
-Copyright (c) 2013-2014
+Copyright (c) 2013-2015
 Licensed under the MPL license.

@@ -15,7 +15,7 @@ term.scaleMode = 'zoom';
 
 term.open(document.body);
 
-var socket = io.connect(location.pathname);
+var socket = io.connect(location.protocol + '//' + location.host + location.pathname);
 
 socket.on('connect', term.reset.bind(term));
 socket.on('data', term.write.bind(term));

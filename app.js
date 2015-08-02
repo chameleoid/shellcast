@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 var express = require('express');
+
 var app = express();
-var server = require('http').createServer(app);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 var swig = require('swig');
-var io = require('socket.io').listen(server);
+
 var term = require('./lib/headless-term.js');
+
 var _ = require('underscore');
 
-app.use('/t', term.middleware());
-
-app.use(express.static(__dirname + '/public'));
 
 var shellcasts = {};
 var stats = {
@@ -22,32 +23,40 @@ var stats = {
 	}),
 };
 
+
 app.engine('html', swig.renderFile);
 
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 app.set('view cache', false);
+
 swig.setDefaults({ cache: false });
 
 if (process.env.NODE_ENV == 'production') {
 	io.enable('browser client etag');
-	io.set('log level', 1);
 	app.set('view cache', true);
 }
 
-stats.socket.on('connection', function(socket) {
-	socket.emit('stats', _.omit(stats, 'socket', 'update'));
+
+app.use(function(req, res, next) {
+	console.log('%s %s', req.method, req.path);
+	next();
 });
+
+app.use('/t', term.middleware());
+app.use(express.static(__dirname + '/public'));
+
 
 app.get('/', function(req, res) {
 	res.render('home');
 });
 
 app.get('/t/:term', function(req, res) {
-	if (shellcasts[req.params.term])
+	if (shellcasts[req.params.term]) {
 		res.render('shell');
-	else
-		res.send(404, 'No shell broadcasting at this location.');
+	} else {
+		res.status(404).send('No shell broadcasting at this location.');
+	}
 });
 
 app.get('/t/:term/c', function(req, res) {
@@ -130,5 +139,6 @@ app.get('/t/:term/c', function(req, res) {
 		res.json({ token: token });
 	}
 });
+
 
 server.listen(process.env.PORT || 5000);

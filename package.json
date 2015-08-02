@@ -1,9 +1,9 @@
 {
   "name": "shellcast",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Shellcast client and server",
   "author": "rummik",
-  "license": "MPL",
+  "license": "MPL-2.0",
   "engines": {
     "node": "0.10.x"
   },
@@ -15,13 +15,13 @@
     "url": "https://github.com/chameleoid/shellcast"
   },
   "dependencies": {
-    "term.js": "0.0.4",
-    "express": "~4.4.3",
-    "swig": "~1.3.2",
-    "socket.io": "~1.0.4",
-    "socket.io-client": "~1.0.4",
-    "pty.js": "~0.2.4",
+    "express": "~4.13.2",
     "optimist": "~0.6.1",
-    "underscore": "~1.6.0"
+    "pty.js": "~0.2.4",
+    "socket.io": "~1.3.6",
+    "socket.io-client": "~1.3.6",
+    "swig": "~1.4.2",
+    "term.js": "0.0.5",
+    "underscore": "~1.8.3"
   }
 }

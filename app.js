@@ -14,14 +14,47 @@ var _ = require('underscore');
 
 var shellcasts = {};
 var stats = {
-	viewers: 0,
-	broadcasts: 0,
+	_viewers: 0,
+	_broadcasts: 0,
 	publicBroadcasts: {},
-	socket: io.of('/stats'),
+	socket: (function() {
+		var socket = io.of('/stats');
+
+		socket.on('connection', function(socket) {
+			stats.update();
+		});
+
+		return socket;
+	})(),
+
 	update: _.debounce(function() {
-		this.socket.emit('stats', _.omit(this, 'socket', 'update'));
+		this.socket.emit('stats', {
+			viewers: this._viewers,
+			broadcasts: this._broadcasts,
+			publicBroadcasts: this.publicBroadcasts,
+		});
 	}),
 };
+
+Object.defineProperties(stats, {
+	viewers: {
+		get: function() { return stats._viewers; },
+
+		set: function(val) {
+			stats._viewers = val;
+			stats.update();
+		},
+	},
+
+	broadcasts: {
+		get: function() { return stats._broadcasts; },
+
+		set: function(val) {
+			stats._broadcasts = val;
+			stats.update();
+		},
+	},
+});
 
 
 app.engine('html', swig.renderFile);
@@ -93,20 +126,19 @@ app.get('/t/:term/c', function(req, res) {
 
 				sc.options = options;
 
-				if (options.public)
+				if (options.public) {
 					stats.publicBroadcasts[req.params.term] = _.pick(sc, 'viewers', 'options');
-				else if (del)
+				} else if (del) {
 					delete stats.publicBroadcasts[req.params.term];
+				}
 
 				stats.update();
 			});
 
 			stats.broadcasts++;
-			stats.update();
 
 			socket.on('disconnect', function() {
 				stats.broadcasts--;
-				stats.update();
 
 				sc.term.reset();
 				delete shellcasts[req.params.term];
@@ -124,12 +156,10 @@ app.get('/t/:term/c', function(req, res) {
 			});
 
 			stats.viewers++;
-			stats.update();
 
 			sc.socket.emit('viewers', ++sc.viewers);
 			socket.on('disconnect', function() {
 				stats.viewers--;
-				stats.update();
 
 				sc.viewers--;
 				sc.socket.emit('viewers', sc.viewers);

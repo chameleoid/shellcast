@@ -31,30 +31,30 @@ Public broadcasts:
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-	io
-		.connect(location.protocol + '//' + location.host + '/stats')
-		.on('stats', function(stats) {
-			document.getElementById('broadcasts').innerHTML =
-				stats.broadcasts + ' ' + (stats.broadcasts != 1 ? 'shells' : 'shell');
+  io
+  .connect(location.protocol + '//' + location.host + '/stats')
+  .on('stats', function(stats) {
+    document.getElementById('broadcasts').innerHTML =
+      stats.broadcasts + ' ' + (stats.broadcasts != 1 ? 'shells' : 'shell');
 
-			document.getElementById('viewers').innerHTML =
-				stats.viewers + ' ' + (stats.viewers != 1 ? 'viewers' : 'viewer');
+    document.getElementById('viewers').innerHTML =
+      stats.viewers + ' ' + (stats.viewers != 1 ? 'viewers' : 'viewer');
 
-			var publicBroadcasts = document.getElementById('public-broadcasts');
+    var publicBroadcasts = document.getElementById('public-broadcasts');
 
-			if (!Object.keys(stats.publicBroadcasts).length)
-				publicBroadcasts.innerHTML = 'none';
-			else
-				publicBroadcasts.innerHTML = '';
+    if (!Object.keys(stats.publicBroadcasts).length)
+      publicBroadcasts.innerHTML = 'none';
+    else
+      publicBroadcasts.innerHTML = '';
 
-			Object.keys(stats.publicBroadcasts).forEach(function(id) {
-				var link = document.createElement('a');
-				var text = document.createTextNode(stats.publicBroadcasts[id].options.title + '\n');
+    Object.keys(stats.publicBroadcasts).forEach(function(id) {
+      var link = document.createElement('a');
+      var text = document.createTextNode(stats.publicBroadcasts[id].options.title + '\n');
 
-				link.href = '/t/' + id;
-				link.appendChild(text);
+      link.href = '/t/' + id;
+      link.appendChild(text);
 
-				publicBroadcasts.appendChild(link);
-			});
-		});
+      publicBroadcasts.appendChild(link);
+    });
+  });
 </script>

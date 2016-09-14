@@ -3,111 +3,111 @@ var http = require('http');
 var io = require('socket.io-client');
 var spawn = require('pty.js').spawn;
 var optimist = require('optimist')
-	.usage('Usage: $0')
-	.options('server', { alias: 's' })
-	.options('host', {
-		description: 'Shellcast server hostname',
-		default: 'tty.tv',
-	})
-	.options('public', {
-		alias: 'p',
-		description: 'Show in public broadcast list',
-		default: false,
-	})
-	.options('title', {
-		alias: 't',
-		description: 'Title of broadcast',
-		default: process.env.USER + '\'s broadcast',
-	})
-	.options('help', {
-		alias: 'h',
-		description: 'Display help',
-	});
+  .usage('Usage: $0')
+  .options('server', { alias: 's' })
+  .options('host', {
+    description: 'Shellcast server hostname',
+    default: 'tty.tv',
+  })
+  .options('public', {
+    alias: 'p',
+    description: 'Show in public broadcast list',
+    default: false,
+  })
+  .options('title', {
+    alias: 't',
+    description: 'Title of broadcast',
+    default: process.env.USER + '\'s broadcast',
+  })
+  .options('help', {
+    alias: 'h',
+    description: 'Display help',
+  });
 
 var argv = optimist.argv;
 var host = argv.host;
 
 if (argv.help) {
-	optimist.showHelp();
-	process.exit();
+  optimist.showHelp();
+  process.exit();
 }
 
 if (argv.server) {
-	require(__dirname + '/../app.js');
+  require(__dirname + '/../app.js');
 } else {
-	if (!process.stdin.isTTY) {
-		console.error('shellcast expects to be run from a TTY');
-		process.exit();
-	}
+  if (!process.stdin.isTTY) {
+    console.error('shellcast expects to be run from a TTY');
+    process.exit();
+  }
 
-	var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-	for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
+  var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  for (var id = ''; id.length <= 7; id += alphabet[Math.floor(Math.random() * alphabet.length)]);
 
-	var url = 'http://' + host + '/t/' + id;
+  var url = 'http://' + host + '/t/' + id;
 
-	http.get(url + '/c', function(res) {
-		res.setEncoding('utf8');
-		res.on('data', function(data) {
-			data = JSON.parse(data);
-			var pipe = io.connect(url + '/' + data.token);
-			pipe.on('connect', function() {
-				shellcast(pipe);
-			});
-		});
-	});
+  http.get(url + '/c', function(res) {
+    res.setEncoding('utf8');
+    res.on('data', function(data) {
+      data = JSON.parse(data);
+      var pipe = io.connect(url + '/' + data.token);
+      pipe.on('connect', function() {
+        shellcast(pipe);
+      });
+    });
+  });
 }
 
 function shellcast(socket) {
-	process.env.SHELLCAST = url;
-	process.stdout.cursorTo(0, 0);
-	process.stdout.clearScreenDown();
-	process.env.TERM = 'xterm';
+  process.env.SHELLCAST = url;
+  process.stdout.cursorTo(0, 0);
+  process.stdout.clearScreenDown();
+  process.env.TERM = 'xterm';
 
-	console.log('Shellcasting to ' + url);
-	socket.emit('data', 'Shellcasting to ' + url + '\r\n');
+  console.log('Shellcasting to ' + url);
+  socket.emit('data', 'Shellcasting to ' + url + '\r\n');
 
-	socket.emit('options', {
-		public: argv.public,
-		title: argv.title,
-	});
+  socket.emit('options', {
+    public: argv.public,
+    title: argv.title,
+  });
 
-	var shell = spawn(process.env.SHELL, [], {
-		rows: process.stdout.rows,
-		cols: process.stdout.columns,
-		env: process.env,
-	});
+  var shell = spawn(process.env.SHELL, [], {
+    rows: process.stdout.rows,
+    cols: process.stdout.columns,
+    env: process.env,
+  });
 
-	socket.emit('resize', {
-		rows: shell.rows,
-		cols: shell.cols,
-	});
+  socket.emit('resize', {
+    rows: shell.rows,
+    cols: shell.cols,
+  });
 
-	process.stdout.on('resize', function() {
-		var rows = process.stdout.rows;
-		var cols = process.stdout.columns;
+  process.stdout.on('resize', function() {
+    var rows = process.stdout.rows;
+    var cols = process.stdout.columns;
 
-		shell.resize(cols, rows);
-		socket.emit('resize', {
-			rows: rows,
-			cols: cols,
-		});
-	});
+    shell.resize(cols, rows);
+    socket.emit('resize', {
+      rows: rows,
+      cols: cols,
+    });
+  });
 
-	shell.stdout.setEncoding('utf8');
-	shell.stdout.on('data', socket.emit.bind(socket, 'data'));
-	shell.stdout.on('data', process.stdout.write.bind(process.stdout));
-	shell.stdout.on('exit', function() {
-		console.error('Shellcasting session ended.');
-		process.exit()
-	});
+  shell.stdout.setEncoding('utf8');
+  shell.stdout.on('data', socket.emit.bind(socket, 'data'));
+  shell.stdout.on('data', process.stdout.write.bind(process.stdout));
+  shell.stdout.on('exit', function() {
+    console.error('Shellcasting session ended.');
+    process.exit()
+  });
 
-	process.stdin.setRawMode(true);
-	process.stdin.setEncoding('utf8');
-	process.stdin.on('data', shell.write.bind(shell));
-	process.stdin.on('end', process.exit.bind(process));
+  process.stdin.setRawMode(true);
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', shell.write.bind(shell));
+  process.stdin.on('end', process.exit.bind(process));
 
-	shell.stdout.resume();
-	process.stdin.resume();
+  shell.stdout.resume();
+  process.stdin.resume();
 }
 
 // vim: set ft=javascript :

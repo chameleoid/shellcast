@@ -16,12 +16,15 @@
   },
   "dependencies": {
     "express": "~4.14.0",
-    "optimist": "~0.6.1",
+    "node-fetch": "^1.6.1",
+    "node-uuid": "^1.4.7",
+    "npm-fetch": "0.0.9",
     "pty.js": "~0.3.1",
     "socket.io": "~1.4.8",
     "socket.io-client": "~1.4.8",
     "swig": "~1.4.2",
     "term.js": "0.0.7",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "yargs": "^5.0.0"
   }
 }

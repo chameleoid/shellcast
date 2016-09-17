@@ -1,32 +1,36 @@
 {
-	"camelcase": true,
-	"curly": false,
-	"eqeqeq": false,
-	"immed": true,
-	"latedef": true,
-	"newcap": true,
-	"noarg": true,
-	"noempty": true,
-	"nonew": true,
-	"quotmark": true,
-	"undef": true,
-	"unused": true,
-	"strict": true,
-	"trailing": true,
-	"boss": true,
-	"eqnull": true,
-	"smarttabs": true,
-	"sub": true,
+  "camelcase": true,
+  "curly": false,
+  "eqeqeq": false,
+  "immed": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "quotmark": true,
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "trailing": true,
+  "boss": true,
+  "eqnull": true,
+  "smarttabs": true,
+  "sub": true,
+  "esversion": 6,
 
-	"browser": true,
-	"node": true,
+  "globals": {
+    "describe": false,
+      "it": false,
+      "before": false,
+      "after": false,
+      "beforeEach": false,
+      "afterEach": false
+  },
 
-	"globals": {
-		"describe": false,
-		"it": false,
-		"before": false,
-		"after": false,
-		"beforeEach": false,
-		"afterEach": false
-	}
+  "overrides": {
+    "{bin/shellcast,lib/*.js}": {
+      "node": true
+    }
+  }
 }

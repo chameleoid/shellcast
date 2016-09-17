@@ -57,7 +57,6 @@ app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
 if (process.env.NODE_ENV == 'production') {
-  swig.setDefaults({ cache: true });
   app.set('view cache', true);
 }
 

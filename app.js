@@ -1,55 +1,46 @@
 #!/usr/bin/env node
-var express = require('express');
+'use strict';
 
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-var swig = require('swig');
-
-var term = require('./lib/headless-term.js');
-
-var _ = require('underscore');
-
+const uuid = require('node-uuid');
+const document = require('./lib/dummy-dom');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const swig = require('swig');
+const term = require('./lib/headless-term');
+const _ = require('underscore');
 
 var shellcasts = {};
 var stats = {
   _viewers: 0,
   _broadcasts: 0,
   publicBroadcasts: {},
-  socket: (function() {
-    var socket = io.of('/stats');
+  socket: io.of('/stats').on('connection', () => stats.update()),
 
-    socket.on('connection', function(socket) {
-      stats.update();
-    });
-
-    return socket;
-  })(),
-
-  update: _.debounce(function() {
-    this.socket.emit('stats', {
-      viewers: this._viewers,
-      broadcasts: this._broadcasts,
-      publicBroadcasts: this.publicBroadcasts,
+  update: _.debounce(() => {
+    stats.socket.emit('stats', {
+      viewers: stats._viewers,
+      broadcasts: stats._broadcasts,
+      publicBroadcasts: stats.publicBroadcasts,
     });
   }),
 };
 
 Object.defineProperties(stats, {
   viewers: {
-    get: function() { return stats._viewers; },
+    get: () => stats._viewers,
 
-    set: function(val) {
+    set: val => {
       stats._viewers = val;
       stats.update();
     },
   },
 
   broadcasts: {
-    get: function() { return stats._broadcasts; },
+    get: () => stats._broadcasts,
 
-    set: function(val) {
+    set: val => {
       stats._broadcasts = val;
       stats.update();
     },
@@ -66,11 +57,11 @@ app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
 if (process.env.NODE_ENV == 'production') {
+  swig.setDefaults({ cache: true });
   app.set('view cache', true);
 }
 
-
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   console.log('%s %s', req.method, req.path);
   next();
 });
@@ -79,11 +70,9 @@ app.use('/t', term.middleware());
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/', function(req, res) {
-  res.render('home');
-});
+app.get('/', (req, res) => res.render('home'));
 
-app.get('/t/:term', function(req, res) {
+app.get('/t/:term', (req, res) => {
   if (shellcasts[req.params.term]) {
     res.render('shell');
   } else {
@@ -91,10 +80,10 @@ app.get('/t/:term', function(req, res) {
   }
 });
 
-app.get('/t/:term/c', function(req, res) {
+app.get('/t/:term/c', (req, res) => {
   if (!shellcasts[req.params.term]) {
-    var token = Math.random();
-    var sc = shellcasts[req.params.term] = {
+    let token = uuid.v4();
+    let sc = shellcasts[req.params.term] = {
       term: term(),
       viewers: 0,
       socket: io.of('/t/' + req.params.term),
@@ -107,21 +96,21 @@ app.get('/t/:term/c', function(req, res) {
 
     sc.term.open(document.body);
 
-    sc.control.on('connection', function(socket) {
-      socket.on('data', function(data) {
+    sc.control.on('connection', socket => {
+      socket.on('data', data => {
         sc.term.write(data);
         sc.socket.emit('data', data);
       });
 
-      socket.on('resize', function(data) {
+      socket.on('resize', data => {
         sc.term.options.cols = data.cols;
         sc.term.options.rows = data.rows;
         sc.term.resize(data.cols, data.rows);
         sc.socket.emit('resize', data);
       });
 
-      socket.on('options', function(options) {
-        var del = !sc.options.public && options.public;
+      socket.on('options', options => {
+        let del = !sc.options.public && options.public;
 
         sc.options = options;
 
@@ -136,7 +125,7 @@ app.get('/t/:term/c', function(req, res) {
 
       stats.broadcasts++;
 
-      socket.on('disconnect', function() {
+      socket.on('disconnect', () => {
         stats.broadcasts--;
 
         sc.term.reset();
@@ -145,7 +134,7 @@ app.get('/t/:term/c', function(req, res) {
       });
     });
 
-    sc.socket.on('connection', function(socket) {
+    sc.socket.on('connection', socket => {
       socket.emit('sync', {
         lines: sc.term.lines,
         x: sc.term.x,
@@ -157,9 +146,9 @@ app.get('/t/:term/c', function(req, res) {
       stats.viewers++;
 
       sc.socket.emit('viewers', ++sc.viewers);
-      socket.on('disconnect', function() {
-        stats.viewers--;
 
+      socket.on('disconnect', () => {
+        stats.viewers--;
         sc.viewers--;
         sc.socket.emit('viewers', sc.viewers);
       });

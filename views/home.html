@@ -32,29 +32,30 @@ Public broadcasts:
 <script src="/socket.io/socket.io.js"></script>
 <script>
   io
-  .connect(location.protocol + '//' + location.host + '/stats')
-  .on('stats', function(stats) {
-    document.getElementById('broadcasts').innerHTML =
-      stats.broadcasts + ' ' + (stats.broadcasts != 1 ? 'shells' : 'shell');
+    .connect(location.protocol + '//' + location.host + '/stats')
 
-    document.getElementById('viewers').innerHTML =
-      stats.viewers + ' ' + (stats.viewers != 1 ? 'viewers' : 'viewer');
+    .on('stats', function(stats) {
+      document.getElementById('broadcasts').innerHTML =
+        stats.broadcasts + ' ' + (stats.broadcasts != 1 ? 'shells' : 'shell');
 
-    var publicBroadcasts = document.getElementById('public-broadcasts');
+      document.getElementById('viewers').innerHTML =
+        stats.viewers + ' ' + (stats.viewers != 1 ? 'viewers' : 'viewer');
 
-    if (!Object.keys(stats.publicBroadcasts).length)
-      publicBroadcasts.innerHTML = 'none';
-    else
-      publicBroadcasts.innerHTML = '';
+      var publicBroadcasts = document.getElementById('public-broadcasts');
 
-    Object.keys(stats.publicBroadcasts).forEach(function(id) {
-      var link = document.createElement('a');
-      var text = document.createTextNode(stats.publicBroadcasts[id].options.title + '\n');
+      if (!Object.keys(stats.publicBroadcasts).length)
+        publicBroadcasts.innerHTML = 'none';
+      else
+        publicBroadcasts.innerHTML = '';
 
-      link.href = '/t/' + id;
-      link.appendChild(text);
+      Object.keys(stats.publicBroadcasts).forEach(function(id) {
+        var link = document.createElement('a');
+        var text = document.createTextNode(stats.publicBroadcasts[id].options.title + '\n');
 
-      publicBroadcasts.appendChild(link);
+        link.href = '/t/' + id;
+        link.appendChild(text);
+
+        publicBroadcasts.appendChild(link);
+      });
     });
-  });
 </script>

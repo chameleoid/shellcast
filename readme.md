@@ -1,9 +1,11 @@
+[![Website][]](https://tty.tv)
 [![dependencies][]][Gemnasium]
 
 Shellcast
 =========
 A shellcasting service
 
+[Website]: https://img.shields.io/website-up-down-green-red/http/tty.tv.svg?label=tty.tv "Website Status"
 [builds]: http://img.shields.io/travis-ci/chameleoid/shellcast.svg "Build Status"
 [Travis]: https://travis-ci.org/chameleoid/shellcast
 [dependencies]: https://img.shields.io/gemnasium/chameleoid/shellcast.png "Dependency Status"

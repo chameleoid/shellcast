@@ -1,11 +1,15 @@
-Shellcast [![dependencies][]][Gemnasium]
+[![Website][]](https://tty.tv)
+[![dependencies][]][Gemnasium]
+
+Shellcast
 =========
 A shellcasting service
 
-[builds]: http://img.shields.io/travis-ci/rummik/shellcast.png "Build Status"
-[Travis]: https://travis-ci.org/rummik/shellcast
-[dependencies]: https://gemnasium.com/rummik/shellcast.png "Dependency Status"
-[Gemnasium]: https://gemnasium.com/rummik/shellcast
+[Website]: https://img.shields.io/website-up-down-green-red/http/tty.tv.svg?label=tty.tv "Website Status"
+[builds]: http://img.shields.io/travis-ci/chameleoid/shellcast.svg "Build Status"
+[Travis]: https://travis-ci.org/chameleoid/shellcast
+[dependencies]: https://img.shields.io/gemnasium/chameleoid/shellcast.svg "Dependency Status"
+[Gemnasium]: https://gemnasium.com/chameleoid/shellcast
 
 
 ## Getting Started
@@ -37,5 +41,6 @@ Take care to maintain the existing coding style.
 
 
 ## License
-Copyright (c) 2013-2016
-Licensed under the MPL license.
+Copyright (c) 2013-2017 Chameleoid and Kimberly Zick (rummik)
+
+Licensed under the MPL license

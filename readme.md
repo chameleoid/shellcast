@@ -1,5 +1,4 @@
 [![Website][]](https://tty.tv)
-[![dependencies][]][Gemnasium]
 
 Shellcast
 =========
